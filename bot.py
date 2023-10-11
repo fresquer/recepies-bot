@@ -1,5 +1,6 @@
 import os
 import random
+import inspect
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
@@ -24,9 +25,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def randomFn(update: Update, context: ContextTypes.DEFAULT_TYPE):
     content = get_page()
     random_object = random.choice(content['results'])
-    data = {"data": [getRecepieFormated(random_object)] }
-    print(data)
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="Randommmmm")
+    formatedRandomObject = getRecepieFormated(random_object)
+
+    message = """\
+        🍱 {title}
+
+        🦴 Link: {link}""".format(title=formatedRandomObject['title'], link=formatedRandomObject['link'])
+
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=inspect.cleandoc(message))
 
 if __name__ == '__main__':
     application = ApplicationBuilder().token(token).build()
