@@ -15,9 +15,43 @@ def recepiesDDBB():
         }
     )
 
+def recepiesDDBBCena():
+    return notion.databases.query(
+        **{
+            "database_id": notion_database_id,
+            "filter": {
+                "property": "momento",
+                "select": {
+                    "equals": "cena",
+                },
+            },  
+        }
+    )
+
+def recepiesDDBBComida():
+    return notion.databases.query(
+        **{
+            "database_id": notion_database_id,
+            "filter": {
+                "property": "momento",
+                "select": {
+                    "equals": "comida",
+                },
+            },  
+        }
+    )
+
+
 
 def get_page():
     return recepiesDDBB()
+
+
+def get_page_cena():
+    return recepiesDDBBCena()
+
+def get_page_comida():
+    return recepiesDDBBComida()
 
 
 def get_page_by_id(id):
