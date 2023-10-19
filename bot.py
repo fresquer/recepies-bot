@@ -1,12 +1,10 @@
 import os
-import random
 import inspect
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
-from helpers import getRecepieFormated
-from notion import get_page, get_page_cena, get_page_comida
-import json
+from helpers import getFomratedMessage, getRecepieFormated
+from notion import get_page, get_recepie_by_momento
 
 load_dotenv()
 token = os.getenv('TELEGRAM_TOKEN')
@@ -23,39 +21,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def randomFn(update: Update, context: ContextTypes.DEFAULT_TYPE):
     content = get_page()
-    random_object = random.choice(content['results'])
-    formatedRandomObject = getRecepieFormated(random_object)
-
-    message = """\
-        🍱 {title}
-
-        🦴 Link: {link}""".format(title=formatedRandomObject['title'], link=formatedRandomObject['link'])
-
+    message = getFomratedMessage(content)
     await context.bot.send_message(chat_id=update.effective_chat.id, text=inspect.cleandoc(message))
 
 async def randomFnCena(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    content = get_page_cena()
-    random_object = random.choice(content['results'])
-    print(random_object)
-    formatedRandomObject = getRecepieFormated(random_object)
-
-    message = """\
-        🍱 {title}
-
-        🦴 Link: {link}""".format(title=formatedRandomObject['title'], link=formatedRandomObject['link'])
-
+    content = get_recepie_by_momento('cena')
+    message = getFomratedMessage(content)
     await context.bot.send_message(chat_id=update.effective_chat.id, text=inspect.cleandoc(message))
 
 async def randomFnComida(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    content = get_page_comida()
-    random_object = random.choice(content['results'])
-    formatedRandomObject = getRecepieFormated(random_object)
-
-    message = """\
-        🍱 {title}
-
-        🦴 Link: {link}""".format(title=formatedRandomObject['title'], link=formatedRandomObject['link'])
-
+    content = get_recepie_by_momento('comida')
+    message = getFomratedMessage(content)
     await context.bot.send_message(chat_id=update.effective_chat.id, text=inspect.cleandoc(message))
 
 
